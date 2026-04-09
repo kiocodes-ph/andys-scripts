@@ -1,0 +1,1983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andy's Scripts - Code & Cheat Repository</title>
+    <meta name="description" content="Andy's Scripts - The ultimate repository for codes, cheats, and scripts. Find and share useful code snippets.">
+    <meta name="keywords" content="Andy's Scripts, code repository, cheats, scripts, programming, admin tools">
+    <!-- Open Graph for social media -->
+    <meta property="og:title" content="Andy's Scripts - Free Code & Cheat Repository">
+    <meta property="og:description" content="Discover powerful scripts, cheats, and code snippets. Save your favorites and boost your productivity.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kiocodes-ph.github.io/andys-scripts/andy.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Andy's Scripts">
+    <meta name="twitter:description" content="Free scripts and cheats repository">
+    <meta name="robots" content="index, follow">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(-50px, -50px) rotate(120deg); }
+            66% { transform: translate(50px, -50px) rotate(240deg); }
+        }
+
+        header {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            -webkit-text-fill-color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--light);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after, .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        button {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--light);
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--glass);
+            border-color: var(--primary);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #d97706);
+            color: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--light), var(--gray));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .search-container {
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            position: relative;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 1.2rem 1.5rem 1.2rem 3.5rem;
+            border: 2px solid var(--glass-border);
+            border-radius: 16px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            color: var(--light);
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            font-size: 1.2rem;
+        }
+
+        .search-filters {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-tag {
+            padding: 0.4rem 1rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-tag:hover, .filter-tag.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .scripts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .script-card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .script-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s;
+        }
+
+        .script-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .script-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .script-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .script-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .script-category {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .script-description {
+            color: var(--gray);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .code-preview {
+            background: var(--darker);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .code-preview pre {
+            color: #a5b4fc;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .script-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .script-actions button {
+            flex: 1;
+            padding: 0.6rem;
+            font-size: 0.85rem;
+        }
+
+        .btn-copy {
+            background: var(--glass);
+            color: var(--light);
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-copy:hover {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .btn-save {
+            background: var(--glass);
+            color: var(--light);
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-save:hover {
+            background: var(--warning);
+            border-color: var(--warning);
+        }
+
+        .btn-save.saved {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .admin-panel {
+            display: none;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .admin-title {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--gray);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--darker);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: var(--light);
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--dark);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            animation: modalSlide 0.3s ease;
+        }
+
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            color: var(--light);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .user-profile {
+            display: none;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-profile.active {
+            display: flex;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-left: 4px solid var(--success);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transform: translateX(400px);
+            transition: transform 0.3s;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            border-left-color: var(--danger);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--gray);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
+            border-top: 1px solid var(--glass-border);
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .scripts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .stats-bar {
+                gap: 2rem;
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--light);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .password-settings {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .password-settings h3 {
+            margin-bottom: 1rem;
+            color: var(--warning);
+        }
+
+        .info-box {
+            background: rgba(99, 102, 241, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9rem;
+        }
+
+        .hash-display {
+            background: var(--darker);
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            word-break: break-all;
+            margin-top: 0.5rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .user-settings-panel {
+            display: none;
+            position: fixed;
+            top: 80px;
+            right: 2rem;
+            width: 350px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            z-index: 99;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .user-settings-panel.active {
+            display: block;
+        }
+
+        .user-settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .user-settings-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .close-settings {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-settings:hover {
+            color: var(--light);
+        }
+
+        .settings-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-section h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .settings-btn {
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--glass-border);
+            margin: 1.5rem 0;
+        }
+
+        .danger-zone h4 {
+            color: var(--danger);
+        }
+
+        .user-info-display {
+            background: var(--darker);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .user-info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-info-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .user-info-value {
+            font-weight: 600;
+        }
+
+        .sync-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--glass);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .sync-status.synced {
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .sync-status.syncing {
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .sync-status.error {
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .admin-notice {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .admin-notice strong {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <header>
+        <nav>
+            <div class="logo" onclick="showHome()">
+                <div class="logo-icon">🚀</div>
+                Andy's Scripts
+            </div>
+            
+            <div class="nav-links">
+                <a href="#" class="active" onclick="showHome()">Browse</a>
+                <a href="#" onclick="showSaved()">Saved</a>
+                <a href="#" id="adminLink" style="display: none;" onclick="toggleAdmin()">Admin Panel</a>
+            </div>
+
+            <div class="auth-buttons" id="authButtons">
+                <button class="btn-secondary" onclick="openModal('loginModal')">Log In</button>
+                <button class="btn-primary" onclick="openModal('registerModal')">Sign Up</button>
+            </div>
+
+            <div class="user-profile" id="userProfile">
+                <div class="user-avatar" id="userAvatar" onclick="toggleUserSettings()" title="Click to open settings">U</div>
+                <div>
+                    <div style="font-weight: 600;" id="userName">User</div>
+                    <div style="font-size: 0.75rem; color: var(--gray);" id="userRole">Member</div>
+                </div>
+                <button class="btn-secondary" onclick="logout()" style="margin-left: 1rem;">Logout</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- User Settings Panel -->
+    <div class="user-settings-panel" id="userSettingsPanel">
+        <div class="user-settings-header">
+            <div class="user-settings-title">⚙️ Account Settings</div>
+            <button class="close-settings" onclick="toggleUserSettings()">×</button>
+        </div>
+
+        <div class="user-info-display">
+            <div class="user-info-item">
+                <span class="user-info-label">Username:</span>
+                <span class="user-info-value" id="settingsUsername">-</span>
+            </div>
+            <div class="user-info-item">
+                <span class="user-info-label">Email:</span>
+                <span class="user-info-value" id="settingsEmail">-</span>
+            </div>
+            <div class="user-info-item">
+                <span class="user-info-label">Role:</span>
+                <span class="user-info-value" id="settingsRole">-</span>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h4>✏️ Change Username</h4>
+            <form id="changeUsernameForm" onsubmit="changeUsername(event)">
+                <div class="form-group" style="margin-bottom: 0.75rem;">
+                    <input type="text" id="newUsername" required placeholder="New username..." minlength="3" maxlength="20">
+                </div>
+                <div class="form-group" style="margin-bottom: 0.75rem;">
+                    <input type="password" id="usernameConfirmPassword" required placeholder="Confirm your password...">
+                </div>
+                <button type="submit" class="btn-primary settings-btn">Update Username</button>
+            </form>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="settings-section">
+            <h4>🔐 Change Password</h4>
+            <form id="changeUserPasswordForm" onsubmit="changeUserPassword(event)">
+                <div class="form-group" style="margin-bottom: 0.75rem;">
+                    <input type="password" id="currentUserPassword" required placeholder="Current password...">
+                </div>
+                <div class="form-group" style="margin-bottom: 0.75rem;">
+                    <input type="password" id="newUserPassword" required placeholder="New password..." minlength="6">
+                </div>
+                <div class="form-group" style="margin-bottom: 0.75rem;">
+                    <input type="password" id="confirmNewUserPassword" required placeholder="Confirm new password...">
+                </div>
+                <button type="submit" class="btn-warning settings-btn">Change Password</button>
+            </form>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="settings-section danger-zone">
+            <h4>⚠️ Danger Zone</h4>
+            <button class="btn-danger settings-btn" onclick="deleteAccount()">Delete My Account</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="hero">
+            <h1>Andy's Scripts</h1>
+            <p>Discover powerful scripts, cheats, and code snippets. Save your favorites and boost your productivity.</p>
+        </div>
+
+        <!-- Sync Status Indicator -->
+        <div style="text-align: center; margin-bottom: 1rem;">
+            <span class="sync-status syncing" id="syncStatus">
+                <span class="loading"></span> Loading scripts from cloud...
+            </span>
+        </div>
+
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-box" id="searchBox" placeholder="Search scripts, cheats, codes..." onkeyup="searchScripts()">
+            <div class="search-filters">
+                <span class="filter-tag active" onclick="filterCategory('all')">All</span>
+                <span class="filter-tag" onclick="filterCategory('cheat')">Cheats</span>
+                <span class="filter-tag" onclick="filterCategory('script')">Scripts</span>
+                <span class="filter-tag" onclick="filterCategory('tool')">Tools</span>
+                <span class="filter-tag" onclick="filterCategory('game')">Gaming</span>
+                <span class="filter-tag" onclick="filterCategory('utility')">Utility</span>
+            </div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-number" id="totalScripts">0</div>
+                <div class="stat-label">Total Scripts</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="totalUsers">1.2K</div>
+                <div class="stat-label">Active Users</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="totalCopies">5.8K</div>
+                <div class="stat-label">Copies Made</div>
+            </div>
+        </div>
+
+        <div class="admin-panel" id="adminPanel">
+            <div class="admin-header">
+                <div class="admin-title">
+                    🛡️ Admin Panel
+                    <span class="admin-badge">Super Admin</span>
+                </div>
+                <button class="btn-secondary" onclick="toggleAdmin()">Close Panel</button>
+            </div>
+
+            <!-- Admin Notice for GitHub -->
+            <div class="admin-notice" id="adminNotice">
+                <strong>ℹ️ Admin Notice:</strong> Scripts are now stored in <code>scripts.json</code> on GitHub. 
+                To add/delete scripts, edit the file directly on GitHub or click "Edit on GitHub" below.
+                Changes take 2-5 minutes to appear for all users.
+            </div>
+            
+            <div style="margin-bottom: 1.5rem;">
+                <a href="https://github.com/kiocodes-ph/andys-scripts/blob/main/scripts.json" target="_blank" class="btn-primary" style="text-decoration: none; display: inline-block;">
+                    ✏️ Edit scripts.json on GitHub
+                </a>
+                <button class="btn-secondary" onclick="refreshScripts()" style="margin-left: 0.5rem;">
+                    🔄 Refresh Scripts
+                </button>
+            </div>
+            
+            <div class="password-settings" id="passwordSettings" style="display: none;">
+                <h3>🔐 Security Settings - Change Admin Password</h3>
+                
+                <div class="info-box">
+                    <strong>Current Status:</strong> <span id="passwordStatus">Default password (UNSECURE - Change immediately!)</span>
+                </div>
+
+                <form id="changePasswordForm" onsubmit="changeAdminPassword(event)">
+                    <div class="form-group">
+                        <label>Current Password</label>
+                        <input type="password" id="currentPassword" required placeholder="Enter current password...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" id="newPassword" required placeholder="Enter new strong password..." minlength="8">
+                        <small style="color: var(--gray);">Minimum 8 characters recommended</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Confirm New Password</label>
+                        <input type="password" id="confirmPassword" required placeholder="Confirm new password...">
+                    </div>
+                    
+                    <button type="submit" class="btn-warning" style="width: 100%; padding: 1rem;">
+                        🔒 Change Password & Hash
+                    </button>
+                </form>
+
+                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--glass-border);">
+                    <button type="button" class="btn-secondary" onclick="generatePasswordHash()" style="width: 100%; margin-bottom: 1rem;">
+                        🛠️ Generate Hash for Custom Password (Advanced)
+                    </button>
+                    <div id="hashOutput" class="hash-display" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="scriptsContainer">
+            <div class="scripts-grid" id="scriptsGrid"></div>
+        </div>
+
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-state-icon">📭</div>
+            <h2>No scripts found</h2>
+            <p>Try adjusting your search or check back later for new additions.</p>
+        </div>
+    </div>
+
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('loginModal')">×</button>
+            <h2 class="modal-title">Welcome Back</h2>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email or Username</label>
+                    <input type="text" id="loginEmail" required placeholder="Enter your email...">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" required placeholder="Enter your password...">
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem;">
+                    Log In
+                </button>
+            </form>
+            <p style="text-align: center; margin-top: 1rem; color: var(--gray);">
+                Don't have an account? <a href="#" onclick="closeModal('loginModal'); openModal('registerModal')" style="color: var(--primary);">Sign up</a>
+            </p>
+        </div>
+    </div>
+
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('registerModal')">×</button>
+            <h2 class="modal-title">Create Account</h2>
+            <form onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="regUsername" required placeholder="Choose a username..." minlength="3" maxlength="20">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="regEmail" required placeholder="Enter your email...">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="regPassword" required placeholder="Create a password..." minlength="6">
+                    <small style="color: var(--gray);">Minimum 6 characters</small>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem;">
+                    Create Account
+                </button>
+            </form>
+            <p style="text-align: center; margin-top: 1rem; color: var(--gray);">
+                Already have an account? <a href="#" onclick="closeModal('registerModal'); openModal('loginModal')" style="color: var(--primary);">Log in</a>
+            </p>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        <span id="toastIcon">✓</span>
+        <span id="toastMessage">Operation successful</span>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Andy's Scripts. All rights reserved. | Made with 🚀 for developers</p>
+    </footer>
+
+    <script>
+        // ==========================================
+        // GITHUB JSON DATABASE CONFIGURATION
+        // ==========================================
+        
+        // GitHub raw URL for scripts.json
+        const SCRIPTS_JSON_URL = 'https://raw.githubusercontent.com/kiocodes-ph/andys-scripts/main/scripts.json';
+        
+        // Cache duration in milliseconds (5 minutes)
+        const CACHE_DURATION = 5 * 60 * 1000;
+        
+        // Global scripts array
+        let scripts = [];
+        let lastFetchTime = 0;
+
+        // ==========================================
+        // FETCH SCRIPTS FROM GITHUB
+        // ==========================================
+        
+        async function fetchScriptsFromGitHub(forceRefresh = false) {
+            const syncStatus = document.getElementById('syncStatus');
+            
+            // Check cache
+            const now = Date.now();
+            if (!forceRefresh && (now - lastFetchTime) < CACHE_DURATION) {
+                const cached = localStorage.getItem('andyScriptsCache');
+                if (cached) {
+                    scripts = JSON.parse(cached);
+                    updateSyncStatus('synced', '✅ Scripts loaded from cache');
+                    return scripts;
+                }
+            }
+            
+            try {
+                syncStatus.className = 'sync-status syncing';
+                syncStatus.innerHTML = '<span class="loading"></span> Fetching from cloud...';
+                
+                // Add cache-busting parameter
+                const url = `${SCRIPTS_JSON_URL}?t=${now}`;
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data && data.scripts && Array.isArray(data.scripts)) {
+                    scripts = data.scripts;
+                    
+                    // Save to cache
+                    localStorage.setItem('andyScriptsCache', JSON.stringify(scripts));
+                    lastFetchTime = now;
+                    
+                    updateSyncStatus('synced', `✅ Synced ${scripts.length} scripts from cloud`);
+                    return scripts;
+                } else {
+                    throw new Error('Invalid data format');
+                }
+                
+            } catch (error) {
+                console.error('Error fetching scripts:', error);
+                
+                // Try to use cached data as fallback
+                const cached = localStorage.getItem('andyScriptsCache');
+                if (cached) {
+                    scripts = JSON.parse(cached);
+                    updateSyncStatus('error', `⚠️ Using cached data (${scripts.length} scripts)`);
+                    return scripts;
+                }
+                
+                // Ultimate fallback - empty array
+                scripts = [];
+                updateSyncStatus('error', '❌ Failed to load scripts. Check connection.');
+                return scripts;
+            }
+        }
+
+        function updateSyncStatus(status, message) {
+            const syncStatus = document.getElementById('syncStatus');
+            syncStatus.className = `sync-status ${status}`;
+            syncStatus.innerHTML = message;
+        }
+
+        function refreshScripts() {
+            fetchScriptsFromGitHub(true).then(() => {
+                renderScripts(currentFilter);
+                updateStats();
+                showToast('Scripts refreshed! 🔄');
+            });
+        }
+
+        // ==========================================
+        // SECURE ADMIN CONFIGURATION
+        // ==========================================
+        
+        const DEFAULT_ADMIN_USERNAME = 'admin';
+        const DEFAULT_ADMIN_PASSWORD = 'superadmin123';
+        
+        const ADMIN_HASH_KEY = 'andyAdminHash';
+        const ADMIN_USERNAME_KEY = 'andyAdminUsername';
+        const SALT_ROUNDS = 12;
+
+        // ==========================================
+        // USER ACCOUNT MANAGEMENT
+        // ==========================================
+        
+        function storeUserCredentials(username, email, password) {
+            const userData = {
+                username: username,
+                email: email,
+                passwordHash: hashPasswordSimple(password),
+                createdAt: new Date().toISOString()
+            };
+            
+            let users = JSON.parse(localStorage.getItem('andyUsers')) || {};
+            users[email.toLowerCase()] = userData;
+            localStorage.setItem('andyUsers', JSON.stringify(users));
+            
+            return userData;
+        }
+
+        function verifyUserCredentials(emailOrUsername, password) {
+            const users = JSON.parse(localStorage.getItem('andyUsers')) || {};
+            const key = emailOrUsername.toLowerCase();
+            
+            let user = users[key];
+            
+            if (!user) {
+                user = Object.values(users).find(u => u.username.toLowerCase() === key);
+            }
+            
+            if (!user) return null;
+            
+            const inputHash = hashPasswordSimple(password);
+            if (inputHash === user.passwordHash) {
+                return user;
+            }
+            
+            return null;
+        }
+
+        function hashPasswordSimple(password) {
+            let hash = 0;
+            const salt = 'andy_scripts_salt_2026';
+            const str = password + salt;
+            
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            
+            return Math.abs(hash).toString(36);
+        }
+
+        function updateUserCredentials(email, updates) {
+            let users = JSON.parse(localStorage.getItem('andyUsers')) || {};
+            const key = email.toLowerCase();
+            
+            if (users[key]) {
+                users[key] = { ...users[key], ...updates };
+                localStorage.setItem('andyUsers', JSON.stringify(users));
+                return true;
+            }
+            return false;
+        }
+
+        function deleteUserAccount(email) {
+            let users = JSON.parse(localStorage.getItem('andyUsers')) || {};
+            delete users[email.toLowerCase()];
+            localStorage.setItem('andyUsers', JSON.stringify(users));
+            
+            localStorage.removeItem('andySaved');
+            localStorage.removeItem('andyUser');
+        }
+
+        // ==========================================
+        // USER SETTINGS FUNCTIONS
+        // ==========================================
+
+        let currentUser = JSON.parse(localStorage.getItem('andyUser')) || null;
+        let savedScripts = JSON.parse(localStorage.getItem('andySaved')) || [];
+        let currentFilter = 'all';
+        let isAdmin = false;
+
+        function toggleUserSettings() {
+            const panel = document.getElementById('userSettingsPanel');
+            panel.classList.toggle('active');
+            
+            if (panel.classList.contains('active') && currentUser) {
+                document.getElementById('settingsUsername').textContent = currentUser.name;
+                document.getElementById('settingsEmail').textContent = currentUser.email;
+                document.getElementById('settingsRole').textContent = isAdmin ? 'Super Admin' : 'Member';
+            }
+        }
+
+        async function changeUsername(e) {
+            e.preventDefault();
+            
+            if (!currentUser) {
+                showToast('You must be logged in!', true);
+                return;
+            }
+            
+            const newUsername = document.getElementById('newUsername').value.trim();
+            const confirmPassword = document.getElementById('usernameConfirmPassword').value;
+            
+            if (newUsername.length < 3) {
+                showToast('Username must be at least 3 characters!', true);
+                return;
+            }
+            
+            let isValid = false;
+            
+            if (isAdmin) {
+                if (isDefaultPassword()) {
+                    isValid = (confirmPassword === DEFAULT_ADMIN_PASSWORD);
+                } else {
+                    const storedHash = localStorage.getItem(ADMIN_HASH_KEY);
+                    isValid = await verifyPassword(confirmPassword, storedHash);
+                }
+            } else {
+                const user = verifyUserCredentials(currentUser.email, confirmPassword);
+                isValid = !!user;
+            }
+            
+            if (!isValid) {
+                showToast('Password is incorrect!', true);
+                return;
+            }
+            
+            if (isAdmin) {
+                localStorage.setItem(ADMIN_USERNAME_KEY, newUsername);
+                currentUser.name = newUsername;
+            } else {
+                updateUserCredentials(currentUser.email, { username: newUsername });
+                currentUser.name = newUsername;
+            }
+            
+            localStorage.setItem('andyUser', JSON.stringify(currentUser));
+            
+            document.getElementById('userName').textContent = newUsername;
+            document.getElementById('userAvatar').textContent = newUsername[0].toUpperCase();
+            
+            document.getElementById('changeUsernameForm').reset();
+            
+            showToast('Username updated successfully! ✏️');
+        }
+
+        async function changeUserPassword(e) {
+            e.preventDefault();
+            
+            if (!currentUser) {
+                showToast('You must be logged in!', true);
+                return;
+            }
+            
+            const currentPass = document.getElementById('currentUserPassword').value;
+            const newPass = document.getElementById('newUserPassword').value;
+            const confirmPass = document.getElementById('confirmNewUserPassword').value;
+            
+            if (newPass.length < 6) {
+                showToast('New password must be at least 6 characters!', true);
+                return;
+            }
+            
+            if (newPass !== confirmPass) {
+                showToast('New passwords do not match!', true);
+                return;
+            }
+            
+            let isValid = false;
+            
+            if (isAdmin) {
+                if (isDefaultPassword()) {
+                    isValid = (currentPass === DEFAULT_ADMIN_PASSWORD);
+                } else {
+                    const storedHash = localStorage.getItem(ADMIN_HASH_KEY);
+                    isValid = await verifyPassword(currentPass, storedHash);
+                }
+            } else {
+                const user = verifyUserCredentials(currentUser.email, currentPass);
+                isValid = !!user;
+            }
+            
+            if (!isValid) {
+                showToast('Current password is incorrect!', true);
+                return;
+            }
+            
+            if (isAdmin) {
+                const newHash = await hashPassword(newPass);
+                localStorage.setItem(ADMIN_HASH_KEY, newHash);
+                updatePasswordStatus();
+            } else {
+                const newHash = hashPasswordSimple(newPass);
+                updateUserCredentials(currentUser.email, { passwordHash: newHash });
+            }
+            
+            document.getElementById('changeUserPasswordForm').reset();
+            
+            showToast('Password changed successfully! 🔐');
+            
+            setTimeout(() => {
+                toggleUserSettings();
+            }, 1500);
+        }
+
+        function deleteAccount() {
+            if (!currentUser) return;
+            
+            const confirmMsg = isAdmin 
+                ? "⚠️ WARNING: You are the Super Admin! Deleting this account will reset admin settings. Continue?"
+                : "Are you sure you want to delete your account? This cannot be undone!";
+            
+            if (!confirm(confirmMsg)) return;
+            
+            if (isAdmin) {
+                const secondConfirm = prompt("Type 'DELETE' to confirm account deletion:");
+                if (secondConfirm !== 'DELETE') {
+                    showToast('Deletion cancelled', true);
+                    return;
+                }
+                
+                localStorage.removeItem(ADMIN_HASH_KEY);
+                localStorage.removeItem(ADMIN_USERNAME_KEY);
+                localStorage.removeItem('isSuperAdmin');
+            }
+            
+            deleteUserAccount(currentUser.email);
+            
+            logout();
+            
+            showToast('Account deleted successfully', true);
+        }
+
+        // ==========================================
+        // PASSWORD SECURITY FUNCTIONS (ADMIN)
+        // ==========================================
+
+        function isDefaultPassword() {
+            const storedHash = localStorage.getItem(ADMIN_HASH_KEY);
+            return !storedHash;
+        }
+
+        function getAdminUsername() {
+            return localStorage.getItem(ADMIN_USERNAME_KEY) || DEFAULT_ADMIN_USERNAME;
+        }
+
+        async function hashPassword(password) {
+            return new Promise((resolve, reject) => {
+                try {
+                    const salt = dcodeIO.bcrypt.genSaltSync(SALT_ROUNDS);
+                    const hash = dcodeIO.bcrypt.hashSync(password, salt);
+                    resolve(hash);
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        }
+
+        async function verifyPassword(password, hash) {
+            return new Promise((resolve, reject) => {
+                try {
+                    const isValid = dcodeIO.bcrypt.compareSync(password, hash);
+                    resolve(isValid);
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        }
+
+        async function changeAdminPassword(e) {
+            e.preventDefault();
+            
+            const currentPass = document.getElementById('currentPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+
+            if (newPass !== confirmPass) {
+                showToast('New passwords do not match!', true);
+                return;
+            }
+
+            if (newPass.length < 8) {
+                showToast('Password must be at least 8 characters long!', true);
+                return;
+            }
+
+            try {
+                let isValidCurrent = false;
+                
+                if (isDefaultPassword()) {
+                    isValidCurrent = (currentPass === DEFAULT_ADMIN_PASSWORD);
+                } else {
+                    const storedHash = localStorage.getItem(ADMIN_HASH_KEY);
+                    isValidCurrent = await verifyPassword(currentPass, storedHash);
+                }
+
+                if (!isValidCurrent) {
+                    showToast('Current password is incorrect!', true);
+                    return;
+                }
+
+                const newHash = await hashPassword(newPass);
+                localStorage.setItem(ADMIN_HASH_KEY, newHash);
+                
+                document.getElementById('changePasswordForm').reset();
+                updatePasswordStatus();
+                showToast('Password changed successfully! 🔒');
+                
+            } catch (error) {
+                console.error('Password change error:', error);
+                showToast('Error changing password. Please try again.', true);
+            }
+        }
+
+        function updatePasswordStatus() {
+            const statusEl = document.getElementById('passwordStatus');
+            if (isDefaultPassword()) {
+                statusEl.innerHTML = '<span style="color: var(--danger); font-weight: bold;">DEFAULT PASSWORD - CHANGE IMMEDIATELY!</span>';
+            } else {
+                statusEl.innerHTML = '<span style="color: var(--success); font-weight: bold;">Custom password set (SECURE)</span>';
+            }
+        }
+
+        async function generatePasswordHash() {
+            const password = prompt('Enter the password you want to hash (for manual configuration):');
+            if (!password) return;
+            
+            try {
+                const hash = await hashPassword(password);
+                const outputDiv = document.getElementById('hashOutput');
+                outputDiv.style.display = 'block';
+                outputDiv.innerHTML = `
+                    <strong>Your Password Hash:</strong><br>
+                    <code style="color: var(--secondary);">${hash}</code><br><br>
+                    <strong>To use this:</strong><br>
+                    Open browser console (F12) and run:<br>
+                    <code style="color: var(--primary);">localStorage.setItem('${ADMIN_HASH_KEY}', '${hash}');</code>
+                `;
+                showToast('Hash generated! Check the box below.');
+            } catch (error) {
+                showToast('Error generating hash', true);
+            }
+        }
+
+        // ==========================================
+        // AUTHENTICATION
+        // ==========================================
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const adminUsername = getAdminUsername();
+            
+            if (email === adminUsername) {
+                let isValid = false;
+                
+                if (isDefaultPassword()) {
+                    isValid = (password === DEFAULT_ADMIN_PASSWORD);
+                } else {
+                    const storedHash = localStorage.getItem(ADMIN_HASH_KEY);
+                    try {
+                        isValid = await verifyPassword(password, storedHash);
+                    } catch (error) {
+                        console.error('Verification error:', error);
+                    }
+                }
+                
+                if (isValid) {
+                    enableSuperAdmin();
+                    currentUser = {
+                        name: adminUsername,
+                        email: email,
+                        isAdmin: true
+                    };
+                    
+                    localStorage.setItem('andyUser', JSON.stringify(currentUser));
+                    closeModal('loginModal');
+                    checkAuth();
+                    showToast('Welcome back, Super Admin! 🛡️');
+                    
+                    if (isDefaultPassword()) {
+                        setTimeout(() => {
+                            showToast('⚠️ WARNING: You are using the default password. Change it immediately in Admin Panel!', true);
+                        }, 2000);
+                    }
+                    return;
+                }
+            }
+            
+            const user = verifyUserCredentials(email, password);
+            
+            if (user) {
+                currentUser = {
+                    name: user.username,
+                    email: user.email,
+                    isAdmin: false
+                };
+                
+                localStorage.setItem('andyUser', JSON.stringify(currentUser));
+                closeModal('loginModal');
+                checkAuth();
+                showToast(`Welcome back, ${user.username}! 🎉`);
+            } else {
+                showToast('Invalid email/username or password!', true);
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const username = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+            
+            const users = JSON.parse(localStorage.getItem('andyUsers')) || {};
+            if (users[email.toLowerCase()]) {
+                showToast('Email already registered! Please log in.', true);
+                return;
+            }
+            
+            const usernameTaken = Object.values(users).some(u => u.username.toLowerCase() === username.toLowerCase());
+            if (usernameTaken) {
+                showToast('Username already taken! Choose another.', true);
+                return;
+            }
+            
+            storeUserCredentials(username, email, password);
+            
+            currentUser = {
+                name: username,
+                email: email,
+                isAdmin: false
+            };
+            
+            localStorage.setItem('andyUser', JSON.stringify(currentUser));
+            closeModal('registerModal');
+            checkAuth();
+            showToast('Account created successfully! 🎉');
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('andyUser');
+            localStorage.removeItem('isSuperAdmin');
+            isAdmin = false;
+            
+            document.getElementById('userSettingsPanel').classList.remove('active');
+            
+            checkAuth();
+            showToast('Logged out successfully');
+        }
+
+        function enableSuperAdmin() {
+            isAdmin = true;
+            localStorage.setItem('isSuperAdmin', 'true');
+            document.getElementById('adminLink').style.display = 'inline';
+            document.getElementById('passwordSettings').style.display = 'block';
+            document.getElementById('adminNotice').style.display = 'block';
+            updatePasswordStatus();
+        }
+
+        function checkAuth() {
+            if (currentUser) {
+                document.getElementById('authButtons').style.display = 'none';
+                document.getElementById('userProfile').classList.add('active');
+                document.getElementById('userName').textContent = currentUser.name;
+                document.getElementById('userAvatar').textContent = currentUser.name[0].toUpperCase();
+                document.getElementById('userRole').textContent = isAdmin ? 'Super Admin' : 'Member';
+                
+                if (isAdmin) {
+                    document.getElementById('adminLink').style.display = 'inline';
+                    document.getElementById('passwordSettings').style.display = 'block';
+                    document.getElementById('adminNotice').style.display = 'block';
+                    updatePasswordStatus();
+                }
+                
+                renderScripts(currentFilter);
+            } else {
+                document.getElementById('authButtons').style.display = 'flex';
+                document.getElementById('userProfile').classList.remove('active');
+                document.getElementById('adminLink').style.display = 'none';
+                document.getElementById('passwordSettings').style.display = 'none';
+                document.getElementById('adminNotice').style.display = 'none';
+                renderScripts(currentFilter);
+            }
+        }
+
+        // ==========================================
+        // SCRIPT MANAGEMENT (GITHUB JSON)
+        // ==========================================
+
+        function renderScripts(filter = 'all', searchTerm = '') {
+            const grid = document.getElementById('scriptsGrid');
+            const emptyState = document.getElementById('emptyState');
+            
+            let filtered = scripts;
+            
+            if (filter !== 'all') {
+                filtered = filtered.filter(s => s.category === filter);
+            }
+            
+            if (searchTerm) {
+                filtered = filtered.filter(s => 
+                    s.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    s.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    s.code.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }
+
+            if (filter === 'saved' && currentUser) {
+                filtered = scripts.filter(s => savedScripts.includes(s.id));
+            }
+
+            if (filtered.length === 0) {
+                grid.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            grid.style.display = 'grid';
+            emptyState.style.display = 'none';
+            
+            grid.innerHTML = filtered.map(script => `
+                <div class="script-card" data-id="${script.id}">
+                    <div class="script-header">
+                        <div>
+                            <div class="script-title">${escapeHtml(script.title)}</div>
+                            <span class="script-category">${script.category}</span>
+                        </div>
+                        <span style="color: var(--gray); font-size: 0.85rem;">📋 ${script.copies || 0}</span>
+                    </div>
+                    <div class="script-description">${escapeHtml(script.description)}</div>
+                    <div class="code-preview">
+                        <pre>${escapeHtml(script.code.substring(0, 150))}${script.code.length > 150 ? '...' : ''}</pre>
+                    </div>
+                    <div class="script-actions">
+                        <button class="btn-copy" onclick="copyScript(${script.id})">
+                            📄 Copy Code
+                        </button>
+                        ${currentUser ? `
+                            <button class="btn-save ${savedScripts.includes(script.id) ? 'saved' : ''}" onclick="toggleSave(${script.id})">
+                                ${savedScripts.includes(script.id) ? '💾 Saved' : '⭐ Save'}
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function searchScripts() {
+            const term = document.getElementById('searchBox').value;
+            renderScripts(currentFilter, term);
+        }
+
+        function filterCategory(category) {
+            currentFilter = category;
+            document.querySelectorAll('.filter-tag').forEach(tag => {
+                tag.classList.remove('active');
+                if (tag.textContent.toLowerCase() === category || (category === 'all' && tag.textContent === 'All')) {
+                    tag.classList.add('active');
+                }
+            });
+            
+            if (category === 'saved') {
+                showSaved();
+            } else {
+                document.getElementById('adminPanel').classList.remove('active');
+                renderScripts(category, document.getElementById('searchBox').value);
+            }
+        }
+
+        async function copyScript(id) {
+            const script = scripts.find(s => s.id === id);
+            if (script) {
+                try {
+                    await navigator.clipboard.writeText(script.code);
+                    showToast('Code copied to clipboard! 📋');
+                } catch (err) {
+                    // Fallback for older browsers
+                    const textArea = document.createElement('textarea');
+                    textArea.value = script.code;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    showToast('Code copied to clipboard! 📋');
+                }
+            }
+        }
+
+        function toggleSave(id) {
+            if (!currentUser) {
+                openModal('loginModal');
+                return;
+            }
+            
+            const index = savedScripts.indexOf(id);
+            if (index > -1) {
+                savedScripts.splice(index, 1);
+                showToast('Removed from saved scripts');
+            } else {
+                savedScripts.push(id);
+                showToast('Script saved! 💾');
+            }
+            
+            localStorage.setItem('andySaved', JSON.stringify(savedScripts));
+            renderScripts(currentFilter, document.getElementById('searchBox').value);
+        }
+
+        function toggleAdmin() {
+            const panel = document.getElementById('adminPanel');
+            panel.classList.toggle('active');
+            if (panel.classList.contains('active')) {
+                document.getElementById('adminLink').classList.add('active');
+            } else {
+                document.getElementById('adminLink').classList.remove('active');
+            }
+        }
+
+        function showHome() {
+            currentFilter = 'all';
+            document.getElementById('adminPanel').classList.remove('active');
+            document.getElementById('userSettingsPanel').classList.remove('active');
+            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+            document.querySelector('.nav-links a:first-child').classList.add('active');
+            renderScripts('all');
+        }
+
+        function showSaved() {
+            if (!currentUser) {
+                openModal('loginModal');
+                return;
+            }
+            currentFilter = 'saved';
+            document.getElementById('adminPanel').classList.remove('active');
+            document.getElementById('userSettingsPanel').classList.remove('active');
+            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+            event.target.classList.add('active');
+            renderScripts('saved');
+        }
+
+        // ==========================================
+        // UI UTILITIES
+        // ==========================================
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+            
+            const settingsPanel = document.getElementById('userSettingsPanel');
+            const userAvatar = document.getElementById('userAvatar');
+            if (settingsPanel.classList.contains('active') && 
+                !settingsPanel.contains(event.target) && 
+                event.target !== userAvatar) {
+                settingsPanel.classList.remove('active');
+            }
+        }
+
+        function showToast(message, error = false) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            document.getElementById('toastIcon').textContent = error ? '⚠️' : '✓';
+            toast.classList.add('show');
+            if (error) toast.classList.add('error');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                toast.classList.remove('error');
+            }, 3000);
+        }
+
+        function updateStats() {
+            document.getElementById('totalScripts').textContent = scripts.length;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Fetch scripts from GitHub first
+            await fetchScriptsFromGitHub();
+            
+            updateStats();
+            checkAuth();
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('admin') === 'super' || localStorage.getItem('isSuperAdmin') === 'true') {
+                enableSuperAdmin();
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                document.getElementById('searchBox').focus();
+            }
+            
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+                document.getElementById('userSettingsPanel').classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
