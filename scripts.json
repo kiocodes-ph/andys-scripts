@@ -1,0 +1,66 @@
+{
+  "scripts": [
+    {
+      "id": 1,
+      "title": "Auto-Clicker Pro",
+      "category": "tool",
+      "description": "Advanced auto-clicker with customizable intervals and hotkeys. Perfect for automation tasks.",
+      "code": "// Auto-Clicker Pro\nfunction autoClick(interval = 1000) {\n  setInterval(() => {\n    document.elementFromPoint(x, y).click();\n  }, interval);\n}\n// Usage: autoClick(500); // Clicks every 500ms",
+      "author": "SuperAdmin",
+      "date": "2026-04-09",
+      "copies": 234
+    },
+    {
+      "id": 2,
+      "title": "Game Speed Hack",
+      "category": "cheat",
+      "description": "Modify game speed in browser-based games. Use responsibly in single-player modes only.",
+      "code": "// Game Speed Modifier\nfunction setGameSpeed(speed = 2.0) {\n  Object.defineProperty(window, 'gameSpeed', {\n    value: speed,\n    writable: true\n  });\n  console.log(`Game speed set to ${speed}x`);\n}",
+      "author": "SuperAdmin",
+      "date": "2026-04-08",
+      "copies": 567
+    },
+    {
+      "id": 3,
+      "title": "Dark Mode Injector",
+      "category": "utility",
+      "description": "Force dark mode on any website with this simple CSS injector.",
+      "code": "// Force Dark Mode\n(function() {\n  const style = document.createElement('style');\n  style.textContent = `\n    * { background-color: #1a1a1a !important; color: #e0e0e0 !important; }\n    img, video { opacity: 0.8; }\n  `;\n  document.head.appendChild(style);\n})();",
+      "author": "SuperAdmin",
+      "date": "2026-04-07",
+      "copies": 892
+    },
+    {
+      "id": 4,
+      "title": "XP Booster",
+      "category": "game",
+      "description": "Browser game XP multiplier. Works with most RPG-style browser games.",
+      "code": "// XP Multiplier\nconst originalXP = window.gainXP;\nwindow.gainXP = function(amount) {\n  const multiplier = 5; // 5x XP\n  return originalXP(amount * multiplier);\n};",
+      "author": "SuperAdmin",
+      "date": "2026-04-06",
+      "copies": 445
+    },
+    {
+      "id": 5,
+      "title": "Form Autofill",
+      "category": "script",
+      "description": "Automatically fill forms with test data for development testing.",
+      "code": "// Form Autofill\nfunction autofillForms() {\n  const inputs = document.querySelectorAll('input');\n  inputs.forEach(input => {\n    if(input.type === 'email') input.value = 'test@test.com';\n    if(input.type === 'text') input.value = 'Test User';\n    if(input.type === 'password') input.value = 'password123';\n  });\n}",
+      "author": "SuperAdmin",
+      "date": "2026-04-05",
+      "copies": 123
+    },
+    {
+      "id": 6,
+      "title": "Ad Blocker Bypass",
+      "category": "utility",
+      "description": "Bypass ad-blocker detection on various websites.",
+      "code": "// Anti-AdBlock Bypass\nwindow.adblockEnabled = false;\nObject.defineProperty(window, 'adblock', {\n  get: () => false,\n  set: () => {}\n});\nconsole.log('Ad-block detection bypassed');",
+      "author": "SuperAdmin",
+      "date": "2026-04-04",
+      "copies": 1567
+    }
+  ],
+  "lastUpdated": "2026-04-09",
+  "version": "1.0"
+}
