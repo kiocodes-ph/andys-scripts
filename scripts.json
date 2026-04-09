@@ -61,6 +61,30 @@
       "copies": 1567
     }
   ],
+  {
+      "id": 7,
+      "title": "Quantum Onyx",
+      "category": "script",
+      "description": "BLOXFRUIT SCRIPT CHEAT - CREDIT BY ONYX",
+      "code": "loadstring(game:HttpGet("https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua"))()
+7:12 PM
+You sent
+{
+      "id": 1,
+      "title": "Auto-Clicker Pro",
+      "category": "tool",
+      "description": "Advanced auto-clicker with customizable intervals and hotkeys. Perfect for automation tasks.",
+      "code": "// Auto-Clicker Pro\nfunction autoClick(interval = 1000) {\n  setInterval(() => {\n    document.elementFromPoint(x, y).click();\n  }, interval);\n}\n// Usage: autoClick(500); // Clicks every 500ms",
+      "author": "ANDY",
+      "date": "2026-04-09",
+      "copies": 9999
+    },
+Sent 3m ago
+",
+      "author": "SuperAdmin",
+      "date": "2026-04-09",
+      "copies": 234
+    },
   "lastUpdated": "2026-04-09",
   "version": "1.0"
 }
